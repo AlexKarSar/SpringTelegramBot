@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SpringTelegramBot.iml" filepath="$PROJECT_DIR$/.idea/SpringTelegramBot.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SpringTelegramBot.SpringTelegramBot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SpringTelegramBot.SpringTelegramBot.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SpringTelegramBot.SpringTelegramBot.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/SpringTelegramBot.SpringTelegramBot.main~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/User-auth.main.iml" filepath="$PROJECT_DIR$/.idea/modules/User-auth.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/User-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/User-service.main.iml" />
     </modules>
   </component>
 </project>

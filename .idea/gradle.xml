@@ -12,6 +12,22 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/User-auth" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/User-auth" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/User-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/User-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/testKafka" />
         <option name="modules">
           <set>

@@ -31,7 +31,7 @@ public class BotListenerLongPoll extends TelegramLongPollingBot {
     private String lastCommand = "";
     private boolean waitingForAnswer = false;
 
-    private String requestProcessing(String input, String username){
+    private String requestProcessing(String input, String username, Long chatId){
         String tmp = "";
         if(!waitingForAnswer) {
             switch (input) {
@@ -54,7 +54,7 @@ public class BotListenerLongPoll extends TelegramLongPollingBot {
                     break;
                 }
                 case "/check": {
-                    tmp = "Ваши заметки:\n"+controller.get();
+                    tmp = "Ваши заметки:\n"+controller.get(chatId);
                     break;
                 }
                 case "/registration": {
@@ -83,10 +83,8 @@ public class BotListenerLongPoll extends TelegramLongPollingBot {
         }else {
             switch (lastCommand){
                 case "/registration": {
-                    if(controller.registration(input)){
-                        tmp = "Регистрация прошла успешно!";
-                    }
-                    else tmp = "Произошла ошибка: возможно вы уже были зарегистрированы";
+                    controller.registration(chatId, username, input);
+                    tmp = "Аккаунт записан и сохранен в бд";
                     lastCommand = "";
                     waitingForAnswer = false;
                     break;
@@ -97,7 +95,7 @@ public class BotListenerLongPoll extends TelegramLongPollingBot {
                         tmp = "Введите пароль от аккаунта";
                     }
                     else {
-                        if(controller.auth(messageBefore, input)){
+                        if(controller.auth(chatId,messageBefore, input)){
                             tmp = "Вы успешно авторизовались!";
                         }
                         else {
@@ -110,7 +108,7 @@ public class BotListenerLongPoll extends TelegramLongPollingBot {
                     break;
                 }
                 case "/add":{
-                    controller.add(input);
+                    controller.add(chatId, input);
                     waitingForAnswer = false;
                     lastCommand = "";
                     tmp = "Записано!)";
@@ -148,7 +146,7 @@ public class BotListenerLongPoll extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         try {
-            telegramBotSender.sendMessageBy(update.getMessage().getChatId(), update.getMessage().getMessageId(), requestProcessing(update.getMessage().getText() ,update.getMessage().getChat().getFirstName()));
+            telegramBotSender.sendMessageBy(update.getMessage().getChatId(), update.getMessage().getMessageId(), requestProcessing(update.getMessage().getText() ,update.getMessage().getChat().getFirstName(), update.getMessage().getChatId()));
             log.info(String.format("ChatId : %s", update.getMessage().getChatId().toString()));
         } catch (TelegramApiException e) {
             log.info(e.getMessage());
