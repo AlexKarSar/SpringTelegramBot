@@ -1,9 +1,11 @@
 package com.example.SpringTelegramBot.listener;
 
 
+import com.example.SpringTelegramBot.controller.SendController;
 import com.example.SpringTelegramBot.property.TelegramBotProperty;
 import com.example.SpringTelegramBot.sender.TelegramBotSender;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -14,34 +16,111 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
 public class BotListenerLongPoll extends TelegramLongPollingBot {
 
+    @Autowired
+    private SendController controller;
     private final TelegramBotProperty telegramBotProperty;
     private final TelegramBotSender telegramBotSender;
 
+    private String messageBefore = "";
+    private String lastCommand = "";
+    private boolean waitingForAnswer = false;
+
     private String requestProcessing(String input, String username){
         String tmp = "";
-        switch (input){
-            case "/start" :
-                tmp = String.format("""
-                Привет %s)!
-                
-                Этот бот создан для создания заметок и планов
-                Для пользования ботом необходимо пройти регистрацию /registration (если вы не были авторизованы на этом телеграмм аккаунте ранее)
-                
-                Если вы хотите получить доступ к вашим заметкам из другого аккаунта пройдите авторизацию /auth
-                
-                Список доступных команд
-                /check - получить список ваших заметок
-                /add - добавить новую заметку
-                /complete - удалить одну из заметок
-                /complete_all - удалить все заметки
-                
-                """, username);
-                break;
+        if(!waitingForAnswer) {
+            switch (input) {
+                case "/start": {
+                    tmp = String.format("""
+                            Привет %s)!
+                                            
+                            Этот бот создан для создания заметок и планов
+                            Для пользования ботом необходимо пройти регистрацию /registration (если вы не были авторизованы на этом телеграмм аккаунте ранее)
+                                            
+                            Если вы хотите получить доступ к вашим заметкам из другого аккаунта пройдите авторизацию /auth
+                                            
+                            Список доступных команд
+                            /check - получить список ваших заметок
+                            /add - добавить новую заметку
+                            /complete - удалить одну из заметок
+                            /complete_all - удалить все заметки
+                                            
+                            """, username);
+                    break;
+                }
+                case "/check": {
+                    tmp = "Ваши заметки:\n"+controller.get();
+                    break;
+                }
+                case "/registration": {
+                    lastCommand = input;
+                    tmp = "Введите пароль для вашего нового аккаунта: ";
+                    waitingForAnswer = true;
+                    break;
+                }
+                case "/auth": {
+                    lastCommand = input;
+                    tmp = "Введите username аккаунта, с которого вы были зарегистрированы: ";
+                    waitingForAnswer = true;
+                    break;
+                }
+                case "/add": {
+                    tmp = "Напиши свою заметку:\n";
+                    lastCommand = input;
+                    waitingForAnswer = true;
+                    break;
+                }
+                default: {
+                    tmp = "Извините, введенной вами команды не существует";
+                    break;
+                }
+            }
+        }else {
+            switch (lastCommand){
+                case "/registration": {
+                    if(controller.registration(input)){
+                        tmp = "Регистрация прошла успешно!";
+                    }
+                    else tmp = "Произошла ошибка: возможно вы уже были зарегистрированы";
+                    lastCommand = "";
+                    waitingForAnswer = false;
+                    break;
+                }
+                case "/auth":{
+                    if(Objects.equals(messageBefore, "")){
+                        messageBefore = input;
+                        tmp = "Введите пароль от аккаунта";
+                    }
+                    else {
+                        if(controller.auth(messageBefore, input)){
+                            tmp = "Вы успешно авторизовались!";
+                        }
+                        else {
+                            tmp = "Произошла ошибка: возможно вы указали неверный паpоль или username";
+                        }
+                        messageBefore = "";
+                        lastCommand= "";
+                        waitingForAnswer = false;
+                    }
+                    break;
+                }
+                case "/add":{
+                    controller.add(input);
+                    waitingForAnswer = false;
+                    lastCommand = "";
+                    tmp = "Записано!)";
+                    break;
+                }
+                default: {
+                    tmp = "Неправильный ввод данных";
+                    lastCommand = "";
+                }
+            }
         }
         return tmp;
     }
@@ -54,6 +133,7 @@ public class BotListenerLongPoll extends TelegramLongPollingBot {
         List<BotCommand> listofCommands = new ArrayList<>();
         listofCommands.add(new BotCommand("/start", "получить информацию о боте"));
         listofCommands.add(new BotCommand("/registration", "зарегистрироваться"));
+        listofCommands.add(new BotCommand("/auth", "авторизоваться"));
         listofCommands.add(new BotCommand("/check", "получить список ваших заметок"));
         listofCommands.add(new BotCommand("/add", "добавить новую заметку"));
         listofCommands.add(new BotCommand("/complete", "удалить одну из заметок"));

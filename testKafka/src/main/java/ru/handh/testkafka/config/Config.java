@@ -1,7 +1,8 @@
-package configuration;
+package ru.handh.testkafka.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +16,12 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaConsumerConfig {
+public class Config {
 
 
-    @Value("${spring.kafka.consumer.bootstrap-servers}")
+    @Value("${kafka.bootstrap-servers}")
     private String bootstrapAddress;
+
 
 
     @Bean

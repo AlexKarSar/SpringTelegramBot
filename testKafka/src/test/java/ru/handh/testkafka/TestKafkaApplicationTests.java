@@ -1,10 +1,10 @@
-package com.example.apigateway;
+package ru.handh.testkafka;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApiGatewayApplicationTests {
+class TestKafkaApplicationTests {
 
     @Test
     void contextLoads() {

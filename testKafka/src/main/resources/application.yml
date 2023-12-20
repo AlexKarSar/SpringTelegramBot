@@ -1,0 +1,6 @@
+server:
+  port: 9909
+
+
+kafka:
+  bootstrap-servers: localhost:29092

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/ApiGateway" />
     <file type="web" url="file://$PROJECT_DIR$/SpringTelegramBot" />
+    <file type="web" url="file://$PROJECT_DIR$/testKafka" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="20" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
